@@ -239,7 +239,7 @@ class LazyTfdsLoader(object):
 
 
 def encode_string_features(
-    dataset, output_features, keys, copy_plaintext=False):
+    dataset, output_features, keys, copy_plaintext=False, with_offsets=False):
   """Encode specified string features.
 
   Passes through non-string features unchanged. Optionally passes through copy
@@ -269,7 +269,13 @@ def encode_string_features(
       if k in keys and v.dtype == tf.string:
         if copy_plaintext:
           ret["%s_plaintext" % k] = v
-        v = tf.cast(output_features[k].vocabulary.encode_tf(v), tf.int64)
+        enc = output_features[k].vocabulary.encode_tf(v, with_offsets)
+        if isinstance(enc, tuple):
+          ids, offsets, _ = enc
+          ret["%s_offsets" % k] = tf.cast(offsets, tf.int64)
+        else:
+          ids = enc
+        v = tf.cast(ids, tf.int64)
       ret[k] = v
     return ret
   return dataset.map(my_fn, num_parallel_calls=tf.data.experimental.AUTOTUNE)
@@ -685,6 +691,7 @@ class Task(DatasetProviderBase):
       shuffle=True,
       shuffle_buffer_size=None,
       copy_plaintext=True,
+      with_offsets=True
   ):
     """Returns a tf.data.Dataset from cache or generated on the fly.
 
@@ -715,7 +722,7 @@ class Task(DatasetProviderBase):
       # Tokenize
       ds = encode_string_features(
           ds, self.output_features, keys=self.output_features,
-          copy_plaintext=copy_plaintext)
+          copy_plaintext=copy_plaintext, with_offsets=with_offsets)
 
     if (not use_cached and self.num_input_examples(split) and
         self.num_input_examples(split) < _MAX_EXAMPLES_TO_MEM_CACHE):

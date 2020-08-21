@@ -128,7 +128,7 @@ class SentencePieceVocabulary(vocabularies.Vocabulary):
         else i for i in ids]
     return self.tokenizer.DecodeIds(ids)
 
-  def encode_tf(self, s):
+  def encode_tf(self, s, offsets=False):
     """Encode a tf.Scalar string to a tf.Tensor.
 
     This will be necessary for on-the-fly tokenization.
@@ -138,6 +138,8 @@ class SentencePieceVocabulary(vocabularies.Vocabulary):
     Returns:
       a 1d tf.Tensor with dtype tf.int32
     """
+    if offsets:
+      return self.tf_tokenizer.tokenize_with_offsets(s)
     return self.tf_tokenizer.tokenize(s)
 
   def decode_tf(self, ids):
