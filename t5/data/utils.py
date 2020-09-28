@@ -1120,7 +1120,8 @@ class Mixture(DatasetProviderBase):
     if not tasks:
       raise ValueError("No datasets have a '{}' split".format(split))
     def filter_features(ex):
-      valid_suffixes = ["", "_position", "_position_x", "_position_y"]
+      valid_suffixes = ["", "_position", "_position_x", "_position_y", "_position_x1", "_position_y1", "_position_x2",
+                        "_position_y2"]
       valid_features = [f + s for f in self.output_features for s in valid_suffixes]
       return {k: v for k, v in ex.items() if k in valid_features}
     datasets = [
