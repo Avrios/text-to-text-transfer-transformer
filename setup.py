@@ -28,15 +28,15 @@ with open('README.md') as fp:
   _LONG_DESCRIPTION = fp.read()
 
 setuptools.setup(
-    name='t5',
+    name='t5-avr',
     version=__version__,
     description='Text-to-text transfer transformer',
     long_description=_LONG_DESCRIPTION,
     long_description_content_type='text/markdown',
-    author='Google Inc.',
-    author_email='no-reply@google.com',
-    url='http://github.com/google-research/text-to-text-transfer-transformer',
-    license='Apache 2.0',
+    author='Avrios',
+    author_email='no-reply@avrios.com',
+    url='http://github.com/Avrios/text-to-text-transfer-transformer',
+    license='copyright',
     packages=setuptools.find_packages(),
     package_data={
         '': ['*.gin'],
@@ -46,7 +46,7 @@ setuptools.setup(
         'absl-py',
         'babel',
         'gin-config',
-        'mesh-tensorflow[transformer]>=0.1.13',
+        'mesh-tensorflow-avr[transformer]>=0.1.13',
         'nltk',
         'numpy',
         'pandas',
