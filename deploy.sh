@@ -14,6 +14,11 @@ rm -rf dist
 echo "Login to AWS Artifact"
 aws codeartifact login --tool pip --repository avrios-pypi --domain avrios --domain-owner 821747761766 --profile avr-test
 
+echo "Setup Twine ENV variables"
+export TWINE_USERNAME=aws
+export TWINE_PASSWORD=`aws codeartifact get-authorization-token --profile avr-test --domain avrios --domain-owner 821747761766 --query authorizationToken --output text`
+export TWINE_REPOSITORY_URL=`aws codeartifact get-repository-endpoint --profile avr-test --domain avrios --domain-owner 821747761766 --repository avrios-pypi --format pypi --query repositoryEndpoint --output text`
+
 echo "Build and deploy library"
 
 python setup.py sdist bdist_wheel
